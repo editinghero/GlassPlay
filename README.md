@@ -34,6 +34,9 @@ Download the app from [Releases](https://github.com/editinghero/GlassPlay/releas
 
 Website - https://glassplay.pages.dev (FFmpeg not supported)
 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/fdb4846c-ae98-40e5-a842-4a0a960fc3b0" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/c4679e6b-ea8e-4526-a4da-f274574e5dbd" />
+<img width="1920" height="1077" alt="Screenshot 2025-07-26 170921" src="https://github.com/user-attachments/assets/8973752c-bf62-4a1c-a95f-2bb4e1d4d564" />
 
 
 Or Build It By Your Own
