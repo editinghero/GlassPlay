@@ -1,0 +1,110 @@
+/* Google Fonts fallback for SF Pro (if SF Pro not available) */
+@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --glass-background: rgba(40, 40, 40, 0.5);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", sans-serif;
+  background-color: #000000; /* Pure black background */
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+}
+
+/* Glassmorphism effect for controls */
+.glass-s {
+  background: var(--glass-background);
+  backdrop-filter: blur(20px);
+}
+.glass-effect {
+  background: var(--glass-background);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow); 
+}
+video::-webkit-media-controls {
+  display: none !important;
+}
+
+/* Custom styles for the video progress bar */
+.progress-container {
+  height: 5px;
+  background-color: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  border-radius: 9999px;
+  position: relative;
+}
+
+.progress-bar {
+  background-color: white;
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.1s;
+}
+
+/* Custom volume slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Track */
+input[type="range"]::-webkit-slider-runnable-track {
+  background: rgba(255, 255, 255, 0.3);
+  height: 4px;
+  border-radius: 4px;
+}
+
+/* Thumb */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -4px; /* Center the thumb */
+  background-color: #fff;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+}
+
+.controls-transition {
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+
+/* === YouTube-style Ambient Mode === */
+.ambient-background {
+  position: absolute;
+  z-index: -10;
+  transform: translateZ(0); /* GPU acceleration */
+  will-change: transform; /* Performance optimization */
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Preview thumbnail styling */
+.preview-thumbnail {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  z-index: 50;
+  transition: transform 0.1s ease;
+}
+
+:fullscreen {
+  border-radius: 1.5rem !important;
+  overflow: hidden;
+}

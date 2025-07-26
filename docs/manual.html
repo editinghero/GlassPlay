@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlassPlay Manual</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(180deg, #000000 0%, #111111 100%);
+            --secondary-gradient: linear-gradient(135deg, #ffffff 0%, #aaaaaa 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --accent-color: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--primary-gradient);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            display: none;
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .sidebar {
+            background: #141414;
+            width: 320px;
+            background: #1e1e1e;
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+            padding: 30px 25px;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .sidebar:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .sidebar h1 {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 35px;
+            text-align: center;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            background: var(--secondary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }
+
+        .sidebar h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--accent-color);
+            border-radius: 2px;
+            box-shadow: 0 0 10px var(--accent-color);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 18px 22px;
+            margin-bottom: 12px;
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 15px;
+            color: #ffffff;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .menu-item:hover::before {
+            left: 100%;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 212, 255, 0.3);
+            border-color: var(--accent-color);
+        }
+
+        .menu-item.active {
+            color: #000;
+            background: var(--secondary-gradient);
+            border-color: var(--accent-color);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .menu-item-icon {
+            margin-right: 12px;
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .content {
+            flex: 1;
+            padding: 40px 50px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .manual-section {
+            display: none;
+            background: rgba(0, 0, 0, 0.98);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.1),
+                0 8px 25px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .manual-section.active {
+            display: block;
+        }
+
+        .manual-section h2 {
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid transparent;
+            background: var(--primary-gradient);
+            background-clip: text;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .manual-section h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: var(--accent-color);
+            border-radius: 2px;
+            box-shadow: 0 0 10px var(--accent-color);
+        }
+
+        .manual-section p {
+            color: #dddddd;
+            line-height: 1.8;
+            margin-bottom: 18px;
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .screenshot-placeholder {
+            width: 100%;
+            height: 600px;
+            background: #1a1a1a;
+            border: 2px dashed var(--accent-color);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 25px 0;
+            color: #718096;
+            font-size: 18px;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .screenshot-placeholder::before {
+            content: '📸';
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.7;
+        }
+
+        .screenshot-placeholder:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 10px var(--accent-color);
+            border-color: #ffffff;
+        }
+
+        .steps {
+            background: #1a1a1a;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .steps ol {
+            padding-left: 20px;
+        }
+
+        .steps li {
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .steps h3 {
+            color: #ffffff;
+        }
+
+        .tip {
+            color: #ffffff;
+            background: #424242;
+            border-left: 4px solid #ffffff;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .tip strong {
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h1>📖 GlassPlay Manual</h1>
+        <a href="#" class="menu-item active" onclick="showSection('getting-started')">🚀 Getting Started</a>
+        <a href="#" class="menu-item" onclick="showSection('progress')"> 📻 What is FFmpeg?</a>
+        <a href="#" class="menu-item" onclick="showSection('processing')">⏱️ Processing Time</a>
+        <a href="#" class="menu-item" onclick="showSection('resize')">🔧 How to Resize Video</a>
+        <a href="#" class="menu-item" onclick="showSection('fullscreen')">⛶ How to Make Fullscreen</a>
+    </div>
+
+    <div class="content">
+
+        <div id="fullscreen" class="manual-section">
+            <h2>⛶ How to Make Fullscreen</h2>
+            <p>Maximize your viewing experience by switching to fullscreen mode during video playback and editing.</p>
+
+            <div class="steps">
+                <h3>Methods to Enter Fullscreen(Ambient mode):</h3>
+                <ol> <br>
+                    <li>Click the fullscreen button in the top right corner of the home page</li>
+                    <li>Press F11 key on your keyboard</li>
+                    <li>Click the fullscreen button in the video controls</li>
+                    <li>Right-click on video and select "Fullscreen"</li>
+                </ol>
+                <br>
+                <h3>Methods to Enter Fullscreen(Player mode):</h3>
+                <ol> <br>
+                    <li>Click the fullscreen button in the video controls (toolbar)</li>
+                </ol>
+            </div>
+            <div class="tip">
+                <strong>💡 Tip:</strong> Press ESC key or F11 again to exit fullscreen mode. You can also move your
+                mouse to the top of the screen to reveal the exit button.
+            </div>
+        </div>
+
+        <div id="processing" class="manual-section">
+            <h2>⏱️ Processing Time</h2>
+            <p>Understanding how long video processing takes and what factors affect the processing speed.</p>
+
+            <div class="steps">
+                <h3>Factors Affecting Processing Time:</h3>
+                <ol> <br>
+                    <li><strong>Check the Taskmanager whether the processing is running (ffmpeg.exe)</strong></li>
+                    <li><strong>Video Length:</strong> Longer videos take more time to process</li>
+                    <li><strong>Resolution:</strong> Higher resolution videos require more processing power</li>
+                    <li><strong>System Performance:</strong> CPU and RAM affect processing speed</li>
+                </ol>
+            </div>
+            <div class="tip">
+                <strong>💡 Estimated Times:</strong>
+                <br>• 1-minute 1080p video: 10-30 seconds
+                <br>• 5-minute 4K video: 1-2 minutes
+                <br>• Complex effects: 2-3x longer than simple operations
+                <br>• DEPENDS ON YOUR SYSTEM (GPU)
+            </div>
+        </div>
+
+        <div id="progress" class="manual-section">
+            <h2>📻 What is FFmpeg?</h2>
+            <p>FFmpeg is a free and open-source multimedia framework that can record, convert, and stream audio and
+                video. It is used by GlassPlay to process videos.</p>
+
+            <div class="steps">
+                <h3>What is FFmpeg?</h3> <br>
+                <ol>
+                    <li><strong>Here you video are coverted to 144p to make the abient video less heavy and smooth
+                            playback</strong></li>
+                    <li><strong>FFmpeg:</strong> FFmpeg is a free and open-source multimedia framework that can record,
+                        convert, and stream audio and video. It is used by GlassPlay to process videos.</li>
+                    <li><strong>FFmpeg.exe:</strong> FFmpeg.exe is the executable file that is used to run FFmpeg. It is
+                        used by GlassPlay to process videos.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div id="getting-started" class="manual-section active">
+            <h2>🚀 Getting Started</h2>
+            <p>Welcome to GlassPlay!</p>
+
+            <div class="steps">
+                <h3>Quick Start Guide:</h3> <br>
+                <ol>
+                    <li><strong>Launch GlassPlay</strong> as Administrator</li>
+                    <li><strong>Select a Video:</strong>
+                        <ol>
+                            <li>Click "Select Video" and choose your file</li>
+                            <li>Enter Video Url and CLicking stream (only valid url not youtube or other sites)</li>
+                        </ol>
+                    </li>
+                    <li><strong>Stream</strong>
+                        <ol>
+                            <li>Video takes few seconds to proccess if ffmpeg is checked</li>
+                            <li>Video plays instantly if ffmpeg is unchecked</li>
+                        </ol>
+                    </li>
+                    <li><strong>Enjoy 🎉</strong></li>
+                </ol>
+            </div>
+        </div>
+        <div id="resize" class="manual-section">
+            <h2>🔧 How to Resize Video</h2>
+            <p>Learn how to resize your videos to different dimensions and aspect ratios using GlassPlay's intuitive
+                interface.</p>
+
+            <div class="steps">
+                <h3>Step-by-Step Guide:</h3> <br>
+                <ol>
+                    <li>Click the "Select Video" button to choose your video file</li>
+                    <li>Once loaded, take you mouse pointer to the bottom of the right window</li>
+                    <li>Resize the video by dragging the bottom of the right window</li>
+                </ol>
+            </div>
+
+            <div class="tip">
+                <strong>💡 Tip:</strong> For best quality, avoid upscaling videos beyond their original resolution.
+                Downscaling typically produces better results.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.manual-section');
+            sections.forEach(section => section.classList.remove('active'));
+
+            // Remove active class from all menu items
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => item.classList.remove('active'));
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Add active class to clicked menu item
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+
+</html>

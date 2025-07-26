@@ -1,0 +1,163 @@
+{
+  "name": "glassplay",
+  "author": {
+    "name": "AstralQuarks",
+    "url": "https://github.com/editinghero"
+  },
+  "description": "A modern video player with stunning glassmorphism effects",
+  "homepage": "https://github.com/editinghero",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/editinghero/glassplay.git"
+  },
+  "keywords": [
+    "video-player",
+    "electron",
+    "glassmorphism",
+    "ffmpeg",
+    "react"
+  ],
+  "private": false,
+  "version": "1.9.0",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "vite",
+    "electron:dev": "concurrently -k \"npm:dev\" \"electron .\"",
+    "build": "vite build",
+    "build:prod": "cross-env NODE_ENV=production ELECTRON=true npm run build",
+    "server": "cross-env NODE_ENV=development node server/index.js",
+    "start": "npm run electron:build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "cleanup:production": "node scripts/production-cleanup.cjs",
+    "electron:build": "npm run build:prod && electron-builder",
+    "electron:build:win": "npm run build:prod && electron-builder --win",
+    "electron:package": "electron-builder"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.0.18",
+    "@tabler/icons-react": "^3.34.1",
+    "@tailwindcss/vite": "^4.1.11",
+    "clsx": "^2.1.1",
+    "concurrently": "^8.2.2",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "electron-is-dev": "^2.0.0",
+    "express": "^4.18.2",
+    "ffmpeg-static": "^5.1.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "framer-motion": "^8.1.7",
+    "motion": "^12.23.9",
+    "multer": "^1.4.5-lts.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-icons": "^5.5.0",
+    "tailwind-merge": "^3.3.1",
+    "tailwindcss": "^4.1.11",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.30.1",
+    "@tauri-apps/cli": "^2.7.1",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.6.0",
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.1",
+    "eslint": "^9.30.1",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.3.0",
+    "terser": "^5.43.1",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.35.1",
+    "vite": "^7.0.4"
+  },
+  "build": {
+    "appId": "dev.glassplay.pages",
+    "productName": "GlassPlay",
+    "copyright": "Copyright © 2025 AstralQuarks",
+    "publish": {
+      "provider": "generic",
+      "url": "https://github.com/editinghero/GlassPlay"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/main.cjs",
+      "electron/preload.cjs",
+      "server/**/*",
+      "docs/**/*",
+      "!server/node_modules",
+      "!**/*.map",
+      "!**/*.md",
+      "!**/README*",
+      "!**/.git*",
+      "!**/test*",
+      "!**/*.test.*",
+      "!**/*.spec.*"
+    ],
+    "directories": {
+      "buildResources": "public",
+      "output": "release"
+    },
+    "extraResources": [
+      {
+        "from": "node_modules/ffmpeg-static/ffmpeg.exe",
+        "to": "ffmpeg.exe"
+      }
+    ],
+    "compression": "maximum",
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "installerIcon": "public/icon.ico",
+      "uninstallerIcon": "public/icon.ico",
+      "license": "LICENSE",
+      "runAfterFinish": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "GlassPlay",
+      "displayLanguageSelector": false,
+      "installerLanguages": [
+        "en_US"
+      ],
+      "deleteAppDataOnUninstall": false
+    },
+    "win": {
+      "executableName": "GlassPlay",
+      "target": {
+        "target": "nsis",
+        "arch": [
+          "x64"
+        ]
+      },
+      "icon": "public/icon.ico",
+      "requestedExecutionLevel": "requireAdministrator",
+      "artifactName": "${productName}-${version}-Setup.${ext}"
+    },
+    "mac": {
+      "target": {
+        "target": "dmg",
+        "arch": [
+          "x64",
+          "arm64"
+        ]
+      },
+      "icon": "public/icon.ico",
+      "category": "public.app-category.video",
+      "artifactName": "${productName}-${version}-mac.${ext}"
+    },
+    "linux": {
+      "target": {
+        "target": "AppImage",
+        "arch": [
+          "x64"
+        ]
+      },
+      "icon": "public/icon.ico",
+      "category": "AudioVideo",
+      "artifactName": "${productName}-${version}-linux.${ext}"
+    }
+  }
+}

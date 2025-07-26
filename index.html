@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GlassPlay</title>
+    
+    <!-- Google Fonts - Inter (as a substitute for SF Pro) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Inter"', 'sans-serif'],
+            },
+            backdropFilter: {
+              'none': 'none',
+              'blur': 'blur(20px)',
+            }
+          }
+        }
+      }
+    </script>
+    
+    <style>
+      /* Custom styles for glassmorphism */
+      :root {
+        --glass-background: rgba(40, 40, 40, 0.5);
+        --glass-border: rgba(255, 255, 255, 0.1);
+      }
+      
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #1a1a1a;
+        min-height: 100vh;
+        margin: 0;
+        overflow-x: hidden;
+      }
+      
+      .glass-effect {
+        background: var(--glass-background);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+      }
+      
+      /* Hide default video controls */
+      video::-webkit-media-controls {
+        display: none !important;
+      }
+      
+      /* Custom styles for the video progress bar */
+      .progress-container {
+        height: 5px;
+        background-color: rgba(255, 255, 255, 0.2);
+        cursor: pointer;
+        border-radius: 9999px;
+      }
+      
+      .progress-bar {
+        background-color: white;
+        height: 100%;
+        border-radius: 9999px;
+        transition: width 0.1s;
+      }
+      
+      /* Custom volume slider */
+      input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        background: transparent;
+        cursor: pointer;
+      }
+      
+      /* Track */
+      input[type="range"]::-webkit-slider-runnable-track {
+        background: rgba(255, 255, 255, 0.3);
+        height: 4px;
+        border-radius: 4px;
+      }
+      
+      /* Thumb */
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        margin-top: -4px; /* Center the thumb */
+        background-color: #fff;
+        height: 12px;
+        width: 12px;
+        border-radius: 50%;
+      }
+      
+      .controls-transition {
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
