@@ -25,8 +25,9 @@ Read the full step-by-step guide in the offline file [`docs/manual.html`](docs/m
 - **Windows**: Windows 10/11 (x64)
 - **macOS**: macOS 10.14+ (x64/ARM64)
 - **Linux**: Ubuntu 18.04+ or equivalent (x64)
+- **CPU**: At Least 2 Cores
 - **RAM**: 4GB minimum, 8GB recommended
-- **Storage**: 500MB for installation
+- **Storage**: 900MB for installation
 
 ## 🚀 Quick Start
 
@@ -34,8 +35,13 @@ Download the app from [Releases](https://github.com/editinghero/GlassPlay/releas
 
 Website - https://glassplay.pages.dev (FFmpeg not supported)
 
+-Player
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/fdb4846c-ae98-40e5-a842-4a0a960fc3b0" />
+
+-All Features
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/c4679e6b-ea8e-4526-a4da-f274574e5dbd" />
+
+-Audio Control
 <img width="1920" height="1077" alt="Screenshot 2025-07-26 170921" src="https://github.com/user-attachments/assets/8973752c-bf62-4a1c-a95f-2bb4e1d4d564" />
 
 
@@ -58,7 +64,6 @@ Or Build It By Your Own
 | `npm run dev` | Start Vite development server |
 | `npm run build` | Build for production with cleanup |
 | `npm run build:prod` | Production build with optimizations |
-| `npm run cleanup` | Clean temporary and build files |
 | `npm run electron:dev` | Start Electron in development mode |
 | `npm run electron:build` | Build Electron app for all platforms |
 | `npm run electron:build:win` | Build for Windows only |
@@ -69,7 +74,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 👨‍💻 Developer
 
-Developed with ❤️ by [EditingHero](https://github.com/editinghero)
+Developed with ❤️ by [AstralQuarks](https://github.com/editinghero)
 
 ---
 
