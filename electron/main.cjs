@@ -57,6 +57,12 @@ if (!gotTheLock) {
   });
 }
 
+// Enable drag and drop for the entire app
+app.on('ready', () => {
+  // Enable drag and drop functionality
+  app.setAsDefaultProtocolClient('glassplay');
+});
+
 // Global error handlers
 process.on('uncaughtException', (error) => {
   console.error('❌ Uncaught Exception:', error);
@@ -217,7 +223,12 @@ async function createWindow() {
         contextIsolation: true,
         preload: preloadPath,
         webSecurity: false, // Allow loading local files
-        devTools: isDev // Only enable DevTools in development mode
+        devTools: isDev, // Only enable DevTools in development mode
+        allowRunningInsecureContent: true, // Allow drag and drop in production
+        experimentalFeatures: true, // Enable experimental features for better compatibility
+        enableRemoteModule: false,
+        sandbox: false, // Disable sandbox to allow drag and drop
+        nativeWindowOpen: true // Enable native window.open behavior
       }
     });
 
@@ -293,6 +304,43 @@ async function createWindow() {
 
     ipcMain.on('open-docs', () => {
       createDocsWindow();
+    });
+
+    // Handle drag and drop file events
+    ipcMain.handle('handle-file-drop', async (event, filePath) => {
+      console.log('File dropped:', filePath);
+      return filePath;
+    });
+
+    // Enable drag and drop on the main window
+    mainWindow.webContents.on('dom-ready', () => {
+      console.log('DOM ready, enabling drag and drop');
+      // Inject drag and drop enablement script
+      mainWindow.webContents.executeJavaScript(`
+        console.log('Enabling drag and drop in renderer process');
+        
+        // Ensure the window accepts drag and drop
+        if (typeof window !== 'undefined') {
+          window.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            return false;
+          }, false);
+          
+          window.addEventListener('drop', (e) => {
+            e.preventDefault();
+            return false;
+          }, false);
+          
+          console.log('Drag and drop event listeners added to window');
+        }
+      `);
+    });
+
+    // Disable web security for drag and drop in production
+    mainWindow.webContents.session.setPermissionRequestHandler((webContents, permission, callback) => {
+      console.log('Permission requested:', permission);
+      // Allow all permissions for drag and drop functionality
+      callback(true);
     });
   } catch (error) {
     console.error('Error creating window:', error);

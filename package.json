@@ -18,7 +18,7 @@
     "react"
   ],
   "private": false,
-  "version": "1.9.0",
+  "version": "2.1.0",
   "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite",
@@ -134,7 +134,39 @@
       },
       "icon": "public/icon.ico",
       "requestedExecutionLevel": "requireAdministrator",
-      "artifactName": "${productName}-${version}-Setup.${ext}"
+      "artifactName": "${productName}-${version}-Setup.${ext}",
+      "fileAssociations": [
+        {
+          "ext": "mp4",
+          "name": "Video File",
+          "description": "Video file supported by GlassPlay",
+          "icon": "public/icon.ico"
+        },
+        {
+          "ext": "webm",
+          "name": "WebM Video",
+          "description": "WebM video file supported by GlassPlay",
+          "icon": "public/icon.ico"
+        },
+        {
+          "ext": "mov",
+          "name": "QuickTime Video",
+          "description": "MOV video file supported by GlassPlay",
+          "icon": "public/icon.ico"
+        },
+        {
+          "ext": "avi",
+          "name": "AVI Video",
+          "description": "AVI video file supported by GlassPlay",
+          "icon": "public/icon.ico"
+        },
+        {
+          "ext": "mkv",
+          "name": "Matroska Video",
+          "description": "MKV video file supported by GlassPlay",
+          "icon": "public/icon.ico"
+        }
+      ]
     },
     "mac": {
       "target": {

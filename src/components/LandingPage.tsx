@@ -16,14 +16,117 @@ const isElectron = () => {
 const LandingPage: React.FC<LandingPageProps> = ({ onVideoSubmit }) => {
   const [videoUrl, setVideoUrl] = useState<string>('')
   const [error, setError] = useState<string>('')
-  const [useFfmpeg, setUseFfmpeg] = useState<boolean>(true)
+  const [useFfmpeg, setUseFfmpeg] = useState<boolean>(false) // Changed default to false
   const [processingId, setProcessingId] = useState<string | null>(null)
+  const [isDragOver, setIsDragOver] = useState<boolean>(false)
+  const dragCounterRef = useRef<number>(0)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // No debug logs in production
-  // useEffect(() => {
-  //   console.log('Processing state:', processingId ? 'active' : 'inactive');
-  // }, [processingId]);
+  // Handle drag and drop functionality with counter to prevent flickering
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    dragCounterRef.current++
+    if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+      setIsDragOver(true)
+    }
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    dragCounterRef.current--
+    if (dragCounterRef.current === 0) {
+      setIsDragOver(false)
+    }
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    dragCounterRef.current = 0
+    setIsDragOver(false)
+
+    const files = Array.from(e.dataTransfer.files)
+    const videoFile = files.find(file => file.type.startsWith('video/'))
+
+    if (videoFile) {
+      handleFileUpload(videoFile)
+    } else {
+      setError('Please drop a valid video file')
+    }
+  }
+
+  const handleFileUpload = async (file: File) => {
+    // If FFmpeg is disabled, bypass backend and play immediately from blob
+    if (!useFfmpeg) {
+      const videoURL = URL.createObjectURL(file)
+      onVideoSubmit({ videoUrl: videoURL, fileName: file.name, ambientUrl: undefined, audioTracks: undefined, subtitles: undefined })
+      return
+    }
+
+    try {
+      const formData = new FormData()
+      formData.append('video', file)
+
+      const res = await fetch(`http://localhost:4000/video/upload-local?useFfmpeg=${useFfmpeg}`, {
+        method: 'POST',
+        body: formData
+      })
+
+      if (!res.ok) throw new Error('Upload failed')
+
+      const data = await res.json()
+
+      if (!data.ready) {
+        // show processing UI
+        setProcessingId(data.id)
+
+        // poll progress
+        const interval = setInterval(async () => {
+          try {
+            const progressRes = await fetch(`http://localhost:4000/progress/${data.id}`)
+            const s = await progressRes.json()
+
+            if (s.ready) {
+              clearInterval(interval)
+              const backendOrigin = 'http://localhost:4000'
+              const submission: VideoSubmission = {
+                videoUrl: new URL(s.videoUrl, backendOrigin).href,
+                ambientUrl: s.ambientUrl ? new URL(s.ambientUrl, backendOrigin).href : undefined,
+                audioTracks: data.audioTracks || [],
+                subtitles: data.subtitles || [],
+                fileName: file.name,
+              }
+              setProcessingId(null)
+              onVideoSubmit(submission)
+            }
+          } catch (err) {
+            console.error('Error polling status:', err)
+          }
+        }, 500) // Poll every 500ms
+        return
+      }
+
+      const backendOrigin = 'http://localhost:4000'
+      const submission: VideoSubmission = {
+        videoUrl: new URL(data.videoUrl, backendOrigin).href,
+        ambientUrl: data.ambientUrl ? new URL(data.ambientUrl, backendOrigin).href : undefined,
+        audioTracks: data.audioTracks || [],
+        subtitles: data.subtitles || [],
+        fileName: file.name,
+      }
+      onVideoSubmit(submission)
+    } catch (err) {
+      console.error(err)
+      setError('Upload failed')
+    }
+  }
 
   const handleUrlChange = (e: ChangeEvent<HTMLInputElement>) => {
     setVideoUrl(e.target.value)
@@ -37,71 +140,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onVideoSubmit }) => {
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (!file) return;
-
-    // If FFmpeg is disabled, bypass backend and play immediately from blob
-    if (!useFfmpeg) {
-      const videoURL = URL.createObjectURL(file);
-      onVideoSubmit({ videoUrl: videoURL, fileName: file.name, ambientUrl: undefined, audioTracks: undefined, subtitles: undefined });
-      return;
-    }
-
-    try {
-      const formData = new FormData();
-      formData.append('video', file);
-
-      const res = await fetch(`http://localhost:4000/video/upload-local?useFfmpeg=${useFfmpeg}`, {
-        method: 'POST',
-        body: formData
-      });
-
-      if (!res.ok) throw new Error('Upload failed');
-
-      const data = await res.json();
-
-      if (!data.ready) {
-        // show processing UI
-        setProcessingId(data.id);
-
-        // poll progress
-        const interval = setInterval(async () => {
-          try {
-            const progressRes = await fetch(`http://localhost:4000/progress/${data.id}`);
-            const s = await progressRes.json();
-
-            if (s.ready) {
-              clearInterval(interval);
-              const backendOrigin = 'http://localhost:4000';
-              const submission: VideoSubmission = {
-                videoUrl: new URL(s.videoUrl, backendOrigin).href,
-                ambientUrl: s.ambientUrl ? new URL(s.ambientUrl, backendOrigin).href : undefined,
-                audioTracks: data.audioTracks || [],
-                subtitles: data.subtitles || [],
-                fileName: file.name,
-              }
-              setProcessingId(null);
-              onVideoSubmit(submission);
-            }
-          } catch (err) {
-            console.error('Error polling status:', err);
-          }
-        }, 500); // Poll every 500ms
-        return;
-      }
-
-      const backendOrigin = 'http://localhost:4000';
-      const submission: VideoSubmission = {
-        videoUrl: new URL(data.videoUrl, backendOrigin).href,
-        ambientUrl: data.ambientUrl ? new URL(data.ambientUrl, backendOrigin).href : undefined,
-        audioTracks: data.audioTracks || [],
-        subtitles: data.subtitles || [],
-        fileName: file.name,
-      }
-      onVideoSubmit(submission);
-    } catch (err) {
-      console.error(err);
-      setError('Upload failed');
-    }
+    if (!file) return
+    handleFileUpload(file)
   }
 
   const handleSubmit = () => {
@@ -128,8 +168,32 @@ const LandingPage: React.FC<LandingPageProps> = ({ onVideoSubmit }) => {
   };
 
   return (
-    <div className="fixed inset-0 overflow-hidden">
+    <div
+      className="fixed inset-0 overflow-hidden"
+      onDragEnter={handleDragEnter}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
       <BackgroundBeamsWithCollision className="fixed inset-0" style={{ zIndex: 1 }} />
+
+      {/* Drag overlay */}
+      {isDragOver && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-xl flex items-center justify-center z-50">
+          <div className="glass-effect p-12 rounded-3xl shadow-2xl backdrop-blur-xl bg-black/30 border-2 border-dashed border-white/30 hover:border-white/50 transition-all duration-300">
+            <div className="text-center">
+              <div className="mb-4">
+                <svg className="w-16 h-16 text-white/70 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-medium text-white mb-2">Drop video file here</h3>
+              <p className="text-white/60 text-sm">Release to upload your video</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="absolute inset-0 flex items-center justify-center px-4" style={{ zIndex: 2 }}>
         <div className="max-w-4xl w-full relative">
           {/* Fullscreen Icon Button - Top Right */}

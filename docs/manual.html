@@ -291,6 +291,7 @@
         <a href="#" class="menu-item" onclick="showSection('progress')"> 📻 What is FFmpeg?</a>
         <a href="#" class="menu-item" onclick="showSection('processing')">⏱️ Processing Time</a>
         <a href="#" class="menu-item" onclick="showSection('resize')">🔧 How to Resize Video</a>
+        <a href="#" class="menu-item" onclick="showSection('ambient-sync')">🎬 Ambient Video Sync</a>
         <a href="#" class="menu-item" onclick="showSection('fullscreen')">⛶ How to Make Fullscreen</a>
     </div>
 
@@ -401,6 +402,56 @@
             <div class="tip">
                 <strong>💡 Tip:</strong> For best quality, avoid upscaling videos beyond their original resolution.
                 Downscaling typically produces better results.
+            </div>
+        </div>
+
+        <div id="ambient-sync" class="manual-section">
+            <h2>🎬 Ambient Video Sync</h2>
+            <p>Learn how the ambient background video automatically syncs with your main video playback controls for a seamless viewing experience.</p>
+
+            <div class="steps">
+                <h3>How Ambient Video Sync Works:</h3> <br>
+                <ol>
+                    <li><strong>Automatic Synchronization:</strong> The ambient background video automatically syncs with the main video player</li>
+                    <li><strong>Play/Pause Control:</strong> When you pause the main video, the ambient video also pauses simultaneously</li>
+                    <li><strong>Resume Playback:</strong> When you resume the main video, the ambient video continues from the same position</li>
+                    <li><strong>Seek Synchronization:</strong> When you skip or seek to different parts of the video, the ambient video follows</li>
+                </ol>
+            </div>
+
+            <div class="steps">
+                <h3>Ambient Video Features:</h3> <br>
+                <ol>
+                    <li><strong>Low Resolution Processing:</strong> Ambient video is processed at 144p for smooth performance</li>
+                    <li><strong>Blur Effect:</strong> The background video is automatically blurred to create an immersive atmosphere</li>
+                    <li><strong>FFmpeg Required:</strong> Ambient video sync only works when FFmpeg processing is enabled</li>
+                    <li><strong>Real-time Sync:</strong> No delay between main video and ambient video controls</li>
+                </ol>
+            </div>
+
+            <div class="steps">
+                <h3>Controlling Ambient Video:</h3> <br>
+                <ol>
+                    <li><strong>Play/Pause:</strong> Use spacebar, click play button, or any video control method</li>
+                    <li><strong>Seeking:</strong> Click on the progress bar or use arrow keys to jump to different timestamps</li>
+                    <li><strong>Speed Control:</strong> Change playback speed - ambient video will match the same speed</li>
+                    <li><strong>Volume Control:</strong> Ambient video has no audio, only the main video audio plays</li>
+                </ol>
+            </div>
+
+            <div class="tip">
+                <strong>💡 Important Notes:</strong>
+                <br>• Ambient video sync requires FFmpeg to be enabled during video upload
+                <br>• If FFmpeg is disabled, only the main video will play without ambient background
+                <br>• The sync is automatic - no manual configuration needed
+                <br>• Both videos maintain perfect synchronization throughout playback
+            </div>
+
+            <div class="tip">
+                <strong>🎯 Troubleshooting:</strong>
+                <br>• If ambient video doesn't sync: Ensure FFmpeg was enabled during video processing
+                <br>• For URL streams: Download the video first, then enable FFmpeg for ambient processing
+                <br>• Check Task Manager for ffmpeg.exe process during video upload
             </div>
         </div>
     </div>
